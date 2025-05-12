@@ -20,26 +20,9 @@ function FuncionarioList() {
 
   return (
     <TableContainer component={Paper}>
-      <Toolbar
-        sx={{
-          backgroundColor: "#ADD8E6",
-          padding: 2,
-          borderRadius: 1,
-          mb: 2,
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography variant="h6" color="primary">
-          Funcionários
-        </Typography>
-        <Button
-          color="primary"
-          onClick={() => navigate("/funcionario")}
-          startIcon={<FiberNew />}
-        >
-          Novo
-        </Button>
+      <Toolbar sx={{ backgroundColor: "#ADD8E6", padding: 2, borderRadius: 1, mb: 2, display: "flex", justifyContent: "space-between", }}>
+        <Typography variant="h6" color="primary">Funcionários</Typography>
+        <Button color="primary" onClick={() => navigate("/funcionario")} startIcon={<FiberNew />}>Novo</Button>
       </Toolbar>
 
       <Table>
@@ -60,15 +43,9 @@ function FuncionarioList() {
             <TableCell>12345</TableCell>
             <TableCell>678</TableCell>
             <TableCell>
-              <IconButton>
-                <Visibility color="primary" />
-              </IconButton>
-              <IconButton>
-                <Edit color="secondary" />
-              </IconButton>
-              <IconButton>
-                <Delete color="error" />
-              </IconButton>
+              <IconButton> <Visibility color="primary" /> </IconButton>
+              <IconButton> <Edit color="secondary" /> </IconButton>
+              <IconButton> <Delete color="error" /> </IconButton>
             </TableCell>
           </TableRow>
         </TableBody>

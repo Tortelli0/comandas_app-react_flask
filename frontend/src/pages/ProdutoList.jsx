@@ -18,7 +18,8 @@ const ProdutoList = () => {
           <TableRow>
             <TableCell>ID</TableCell>
             <TableCell>Nome</TableCell>
-            <TableCell>Preço</TableCell>
+            <TableCell>Descrição</TableCell>
+            <TableCell>ValorUnitario</TableCell>
             <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
@@ -26,7 +27,8 @@ const ProdutoList = () => {
           <TableRow key={1}>
             <TableCell>1</TableCell>
             <TableCell>Produto Teste</TableCell>
-            <TableCell>R$ 50,00</TableCell>
+            <TableCell>Descricao</TableCell>
+            <TableCell>R$50,00</TableCell>
             <TableCell>
               <IconButton> <Visibility color="primary" /> </IconButton>
               <IconButton> <Edit color="secondary" /> </IconButton>
