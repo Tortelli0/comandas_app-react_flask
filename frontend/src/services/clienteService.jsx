@@ -31,3 +31,10 @@ export const deleteCliente = async (id) => {
     const response = await axios.delete(`${PROXY_URL}`, { params: { id_cliente: id } });
     return response.data;
 };
+
+// Verificar se o CPF já existe
+export const checkCpf = async (cpf) => {
+    const response = await axios.get(`${PROXY_URL}check-cpf`, { params: { cpf } });
+    // espera retorno { exists: boolean, id: number | null }
+    return response.data;
+  };
