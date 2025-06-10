@@ -11,6 +11,8 @@ import { getClientes, deleteCliente } from '../services/clienteService';
 import { toast } from 'react-toastify';
 // useTheme para acessar o tema do Material-UI.
 import { useTheme } from '@mui/material/styles';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function ClienteList() {
   // O useNavigate é um hook que permite navegar programaticamente entre as rotas da aplicação
@@ -44,6 +46,28 @@ function ClienteList() {
         console.error('Erro ao buscar clientes:', error);
     }
   };
+  
+  function generatePdf({ title, columns, data }) {
+    const doc = new jsPDF();
+  
+    doc.text(title, 14, 15);
+  
+    autoTable(doc, {
+      startY: 20,
+      head: [columns],
+      body: data.map((item) =>
+        columns.map((col) => {
+          const value = item[col];
+          if (value === null || value === undefined) return "";
+          return typeof value === "object" ? JSON.stringify(value) : String(value);
+        })
+      ),
+    });
+  
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl); // Abre em nova aba
+  }
 
   // Função para lidar com o clique no botão de deletar cliente
   // handleDeleteClick: função que exibe um toast de confirmação antes de excluir o cliente.
@@ -101,6 +125,21 @@ function ClienteList() {
             <Typography variant="h6" color="primary">Clientes</Typography>
             <Button color="primary" onClick={() => navigate('/cliente')} startIcon={<FiberNew />}>Novo</Button>
         </Toolbar>
+
+        <Toolbar sx={{ backgroundColor: '#ADD8E6', padding: 0, borderRadius: 1, mb: 1, display: 'flex', justifyContent: 'space-between' }}>
+          <Button variant="contained" color="primary" startIcon={<FiberNew />}
+            onClick={() =>
+              generatePdf({
+                title: "Lista de Clientes",
+                columns: ["id_cliente", "nome", "cpf", "telefone"],
+                data: clientes,
+              })
+            }
+          >
+            Gerar PDF
+          </Button>
+      </Toolbar>
+
 
         <Table>
             <TableHead>

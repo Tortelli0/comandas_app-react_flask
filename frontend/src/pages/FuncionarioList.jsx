@@ -11,6 +11,8 @@ import { getFuncionarios, deleteFuncionario } from '../services/funcionarioServi
 import { toast } from 'react-toastify';
 // useTheme para acessar o tema do Material-UI.
 import { useTheme } from '@mui/material/styles';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function FuncionarioList() {
   // O useNavigate é um hook que permite navegar programaticamente entre as rotas da aplicação
@@ -44,6 +46,43 @@ function FuncionarioList() {
         console.error('Erro ao buscar funcionários:', error);
     }
   };
+
+  // function generatePdf({ title, columns, data }) {
+  //     const doc = new jsPDF();
+    
+  //     doc.text(title, 14, 15);
+  //     autoTable(doc, {
+  //       startY: 20,
+  //       head: [columns],
+  //       body: data.map((item) => columns.map((col) => item[col] ?? "")),
+  //     });
+    
+  //     const pdfBlob = doc.output("blob");
+  //     const blobUrl = URL.createObjectURL(pdfBlob);
+  //     window.open(blobUrl); // Abre o PDF em nova aba
+  //   }
+
+  function generatePdf({ title, columns, data }) {
+    const doc = new jsPDF();
+  
+    doc.text(title, 14, 15);
+  
+    autoTable(doc, {
+      startY: 20,
+      head: [columns],
+      body: data.map((item) =>
+        columns.map((col) => {
+          const value = item[col];
+          if (value === null || value === undefined) return "";
+          return typeof value === "object" ? JSON.stringify(value) : String(value);
+        })
+      ),
+    });
+  
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl); // Abre em nova aba
+  }
 
   // Função para lidar com o clique no botão de deletar funcionário
   // handleDeleteClick: função que exibe um toast de confirmação antes de excluir o funcionário.
@@ -101,6 +140,21 @@ function FuncionarioList() {
             <Typography variant="h6" color="primary">Funcionários</Typography>
             <Button color="primary" onClick={() => navigate('/funcionario')} startIcon={<FiberNew />}>Novo</Button>
         </Toolbar>
+
+        <Toolbar sx={{ backgroundColor: '#ADD8E6', padding: 0, borderRadius: 1, mb: 1, display: 'flex', justifyContent: 'space-between' }}>
+          <Button variant="contained" color="primary" startIcon={<FiberNew />}
+            onClick={() =>
+              generatePdf({
+                title: "Lista de Funcionários",
+                columns: ["id_funcionario", "nome", "cpf", "matricula", "telefone", "grupo"],
+                data: funcionarios,
+              })
+            }
+          >
+            Gerar PDF
+          </Button>
+        </Toolbar>
+
 
         <Table>
             <TableHead>

@@ -15,6 +15,8 @@ import { getProdutos, deleteProduto } from '../services/produtoService';
 import { toast } from 'react-toastify';
 // useTheme: usado para acessar o tema do Material-UI.
 import { useTheme } from '@mui/material/styles';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const ProdutoList = () => {
 
@@ -49,6 +51,28 @@ const ProdutoList = () => {
       console.error('Erro ao buscar produtos:', error);
     }
   };
+
+  function generatePdf({ title, columns, data }) {
+    const doc = new jsPDF();
+  
+    doc.text(title, 14, 15);
+  
+    autoTable(doc, {
+      startY: 20,
+      head: [columns],
+      body: data.map((item) =>
+        columns.map((col) => {
+          const value = item[col];
+          if (value === null || value === undefined) return "";
+          return typeof value === "object" ? JSON.stringify(value) : String(value);
+        })
+      ),
+    });
+
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl); // Abre em nova aba
+  }
 
   // handleDeleteClick: função que exibe um toast de confirmação antes de excluir.
   const handleDeleteClick = (produto) => {
@@ -89,6 +113,21 @@ const ProdutoList = () => {
         <Typography variant="h6" color="primary">Produtos</Typography>
         <Button color="primary" onClick={() => navigate('/produto')} startIcon={<FiberNew />}>Novo</Button>
       </Toolbar>
+
+      <Toolbar sx={{ backgroundColor: '#ADD8E6', padding: 0, borderRadius: 1, mb: 1, display: 'flex', justifyContent: 'space-between' }}>
+        <Button variant="contained" color="primary" startIcon={<FiberNew />}
+          onClick={() =>
+            generatePdf({
+              title: "Lista de Clientes",
+              columns: ["id_produto", "nome", "valor_unitario", "foto", "descricao"],
+              data: produtos,
+            })
+          }
+        >
+          Gerar PDF
+        </Button>
+    </Toolbar>
+
     
     <Table>
       <TableHead>
